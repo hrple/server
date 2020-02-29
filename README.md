@@ -22,7 +22,6 @@ Hopefully everything is green :)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=bugs)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=code_smells)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=hrple_common)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=coverage)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=ncloc)](https://sonarcloud.io/dashboard?id=hrple_common)
 
 [![codecov](https://codecov.io/gh/hrple/common/branch/master/graph/badge.svg)](https://codecov.io/gh/hrple/common)
