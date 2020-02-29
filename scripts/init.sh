@@ -29,8 +29,8 @@ else
     echo "$safesql_content"
 fi
 
-shellcheck_content=$(safesql)
-shellcheck_res=$?
+# shellcheck_content=$(safesql)
+# shellcheck_res=$?
 
 # if [ $shellcheck_res -gt "0" ]
 # then

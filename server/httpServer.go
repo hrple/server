@@ -35,7 +35,7 @@ func (server *ApplicationServer) Run() error {
 
 //New instantiates a new ApplicationServer based on the ApplicationServerConfig
 func New(runningContextType string, logger *log.Logger, config *ApplicationServerConfig) (*ApplicationServer, error) {
-	var err error = nil
+	var err error
 
 	server := &ApplicationServer{
 		logger:     logger,
