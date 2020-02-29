@@ -6,7 +6,6 @@
 export PATH=${PATH}:`go env GOPATH`/bin
 fmt_content=$(gofmt -l -s -w ./)
 
-go get -u golang.org/x/lint/golint
 golint ./...
 
 golangci-lint run \
@@ -33,8 +32,6 @@ golangci-lint run \
     #--enable=funlen \ -- TODO : Implement
     # --enable=godox \ -- TODO : Implement
     # --enable=gochecknoglobals \  -- TODO : Convert the errors outputted here to objects?
-
- go get github.com/stripe/safesql
 
 sql_content=$(safesql -v ./)
 sql_res=$?
