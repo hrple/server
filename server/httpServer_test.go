@@ -16,19 +16,10 @@ var (
 
 const ApplicationName = "HRPLE-SERVER-TEST"
 
-func TestStandaloneServerInitialisationLambda(t *testing.T) {
+func getAppServerConfig() *ApplicationServerConfig {
 	defaultReadTimeout, _ := time.ParseDuration("5s")
 	defaultWriteTimeout, _ := time.ParseDuration("10s")
 	defaultIdleTimeout, _ := time.ParseDuration("120s")
-
-	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
-	if err != nil {
-		if strings.Contains(err.Error(), "WARNING:") {
-			t.Logf("%v", err)
-		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
-		}
-	}
 
 	appServerConfig := &ApplicationServerConfig{
 		ServerAddress: SampleAPIServiceAddress,
@@ -39,8 +30,28 @@ func TestStandaloneServerInitialisationLambda(t *testing.T) {
 		IdleTimeout:   defaultIdleTimeout,
 	}
 
+	return appServerConfig
+}
+
+func getLogger() *log.Logger {
 	logPrefix := ApplicationName + " : "
 	logger := log.New(os.Stdout, logPrefix, log.LstdFlags|log.Lshortfile)
+	return logger
+}
+
+func TestStandaloneServerInitialisationLambda(t *testing.T) {
+
+	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
+	if err != nil {
+		if strings.Contains(err.Error(), "WARNING:") {
+			t.Logf("%v", err)
+		} else {
+			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		}
+	}
+
+	appServerConfig := getAppServerConfig()
+	logger := getLogger()
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
@@ -54,10 +65,6 @@ func TestStandaloneServerInitialisationLambda(t *testing.T) {
 }
 
 func TestStandaloneServerInitialisationStandalone(t *testing.T) {
-	defaultReadTimeout, _ := time.ParseDuration("5s")
-	defaultWriteTimeout, _ := time.ParseDuration("10s")
-	defaultIdleTimeout, _ := time.ParseDuration("120s")
-
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
 		if strings.Contains(err.Error(), "WARNING:") {
@@ -67,17 +74,8 @@ func TestStandaloneServerInitialisationStandalone(t *testing.T) {
 		}
 	}
 
-	appServerConfig := &ApplicationServerConfig{
-		ServerAddress: SampleAPIServiceAddress,
-		TLSCertFile:   SampleAPIServerCert,
-		TLSKeyFile:    SampleAPIServerKey,
-		ReadTimeout:   defaultReadTimeout,
-		WriteTimeout:  defaultWriteTimeout,
-		IdleTimeout:   defaultIdleTimeout,
-	}
-
-	logPrefix := ApplicationName + " : "
-	logger := log.New(os.Stdout, logPrefix, log.LstdFlags|log.Lshortfile)
+	appServerConfig := getAppServerConfig()
+	logger := getLogger()
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
@@ -87,61 +85,4 @@ func TestStandaloneServerInitialisationStandalone(t *testing.T) {
 	if appServer == nil {
 		t.Fatal("Error failed to init server, expected AppServer object")
 	}
-
-	//appServer.Run()
-
-	// cases := []struct {
-	// 	name        string
-	// 	path        string
-	// 	contentType string
-	// }{
-	// 	{
-	// 		name:        "normal file",
-	// 		path:        "index.html",
-	// 		contentType: "",
-	// 	},
-	// 	{
-	// 		name:        "javascript",
-	// 		path:        "test.js",
-	// 		contentType: "application/javascript",
-	// 	},
-	// 	{
-	// 		name:        "css",
-	// 		path:        "test.css",
-	// 		contentType: "text/css",
-	// 	},
-	// 	{
-	// 		name:        "png",
-	// 		path:        "test.png",
-	// 		contentType: "image/png",
-	// 	},
-	// 	{
-	// 		name:        "jpg",
-	// 		path:        "test.jpg",
-	// 		contentType: "image/jpeg",
-	// 	},
-	// 	{
-	// 		name:        "gif",
-	// 		path:        "test.gif",
-	// 		contentType: "image/gif",
-	// 	},
-	// }
-
-	// for _, c := range cases {
-	// 	t.Run(c.name, func(t *testing.T) {
-	// 		rr := httptest.NewRecorder()
-	// 		req, err := http.NewRequest("GET", "http://localhost/"+c.path, nil)
-
-	// 		if err != nil {
-	// 			t.Fatal(err)
-	// 		}
-
-	// 		s := StaticFileServer(dummyFileSystem{})
-	// 		s.ServeHTTP(rr, req)
-
-	// 		if rr.Header().Get("Content-Type") != c.contentType {
-	// 			t.Fatalf("Unexpected Content-Type: %s", rr.Header().Get("Content-Type"))
-	// 		}
-	// 	})
-	// }
 }
