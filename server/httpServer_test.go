@@ -98,7 +98,7 @@ func TestRunStandaloneServer(t *testing.T) {
 			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
 		}
 	}
-
+	//Maybe this works
 	appServerConfig := getAppServerConfig()
 	logger := getLogger()
 
