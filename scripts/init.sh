@@ -32,11 +32,14 @@ fi
 shellcheck_content=$(safesql)
 shellcheck_res=$?
 
-if [ $shellcheck_res -gt "0" ]
-then
-    apt-get -y install shellcheck
-else
-    echo "$shellcheck_content"
-fi
+# if [ $shellcheck_res -gt "0" ]
+# then
+#     apt-get -y install shellcheck
+#     curl --output ~/shellcheck-stable.linux.x86_64.tar.xz https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz   
+#     tar -xf ~/shellcheck-stable.linux.x86_64.tar.xz -C ~/
+#     sudo cp ~/shellcheck-stable/shellcheck /usr/local/bin
+# else
+#     echo "$shellcheck_content"
+# fi
 
 git config core.hooksPath .githooks

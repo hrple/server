@@ -11,6 +11,7 @@ const (
 	RunningContextTypeStandalone = "STANDALONE"
 )
 
+// GetRunningContextType allows for the retrieval of a valid run time environment i.e. Standalone aka docker or Lambda
 func GetRunningContextType(contextType string) (string, error) {
 	contextType = strings.ToUpper(contextType)
 
