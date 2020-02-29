@@ -22,7 +22,7 @@ jobs:
       #   with:
       #     name: code-coverage-report.out
       #     path: bin
-      - name: Run Tests & Generate Coverage (CodeCov)
+      - name: Run Tests & Generate Coverage
         run: make test
       - uses: codecov/codecov-action@v1
         with:
