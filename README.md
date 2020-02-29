@@ -11,6 +11,7 @@ Sharing is caring, especially when its code.
 Hopefully everything is green :)
 
 ![ci-workflow-common](https://github.com/hrple/common/workflows/ci-workflow-common/badge.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0c8419e9f5b34fe0a0ffd522ff9065e5)](https://app.codacy.com/gh/hrple/common?utm_source=github.com&utm_medium=referral&utm_content=hrple/common&utm_campaign=Badge_Grade_Dashboard)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hrple/common)](https://goreportcard.com/report/github.com/hrple/common)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=alert_status)](https://sonarcloud.io/dashboard?id=hrple_common)
