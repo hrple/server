@@ -46,7 +46,7 @@ func getLogger() *log.Logger {
 func TestServerInitialisationLambda(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
-		if strings.Contains(err.Error(), Warning) {
+		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
 			t.Logf("%v", err)
 		} else {
 			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeLambda, runningContextType, err)
@@ -70,7 +70,7 @@ func TestServerInitialisationLambda(t *testing.T) {
 func TestServerInitAndRunnningOfStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
-		if strings.Contains(err.Error(), Warning) {
+		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
 			t.Logf("%v", err)
 		} else {
 			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
