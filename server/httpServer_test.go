@@ -58,12 +58,11 @@ func TestServerInitialisationLambda(t *testing.T) {
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		//t.Fatal("Error failed to init server")
 		t.Logf("Not implemented - Error : %v", err)
 	}
 
 	if appServer == nil {
-		t.Fatal("Error failed to init server, expected AppServer object")
+		t.Fatal(ErrMsgFailedCreateServer)
 	}
 }
 func TestServerInitialisationStandalone(t *testing.T) {
@@ -72,7 +71,7 @@ func TestServerInitialisationStandalone(t *testing.T) {
 		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
 		}
 	}
 
@@ -81,11 +80,11 @@ func TestServerInitialisationStandalone(t *testing.T) {
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		t.Fatal("Error failed to init server")
+		t.Fatal(ErrMsgFailedCreateServerWithError, err)
 	}
 
 	if appServer == nil {
-		t.Fatal("Error failed to init server, expected AppServer object")
+		t.Fatal(ErrMsgFailedCreateServer)
 	}
 }
 
@@ -95,20 +94,20 @@ func TestRunStandaloneServer(t *testing.T) {
 		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
 		}
 	}
-	//Maybe this works
+
 	appServerConfig := getAppServerConfig()
 	logger := getLogger()
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		t.Fatal("Error failed to init server")
+		t.Fatal(ErrMsgFailedCreateServerWithError, err)
 	}
 
 	if appServer == nil {
-		t.Fatal("Error failed to init server, expected AppServer object")
+		t.Fatal(ErrMsgFailedCreateServer)
 	}
 
 	serviceRunning := make(chan struct{})
