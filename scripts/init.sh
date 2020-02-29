@@ -29,4 +29,14 @@ else
     echo "$safesql_content"
 fi
 
+shellcheck_content=$(safesql)
+shellcheck_res=$?
+
+if [ $shellcheck_res -gt "0" ]
+then
+    apt-get -y install shellcheck
+else
+    echo "$shellcheck_content"
+fi
+
 git config core.hooksPath .githooks

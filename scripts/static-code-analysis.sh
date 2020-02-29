@@ -3,8 +3,11 @@
 #move linting to another script...
 #add red and stuff to messages
 #init 
-export PATH=${PATH}:`go env GOPATH`/bin
-fmt_content=$(gofmt -l -s -w ./)
+PATH=${PATH}:$(go env GOPATH)/bin
+export PATH
+
+echo 
+gofmt -l -s -w ./
 
 golint ./...
 
@@ -40,22 +43,22 @@ PASSED="\e[1;32mPASSED\e[0m"
 FAILED="\e[1;31mFAILED\e[0m"
 WARNING="\e[1;33mWARNING\e[0m"
 
-PASSED_COLOR="\e[32m"
+# PASSED_COLOR="\e[32m"
 FAILED_COLOR="\e[31m"
 WARNING_COLOR="\e[33m"
 RESET="\e[0m"
 
 if [ $sql_res -eq "0" ]
 then
-    echo -e "  SQL - Keep it secret, keep it safe........"$PASSED
+    echo -e "  SQL - Keep it secret, keep it safe........$PASSED"
 else
     if [[ $sql_content == *"supported database driver"* ]]
     then
-        echo -e "  SQL - Keep it secret, keep it safe........"$WARNING
-        echo -e $WARNING_COLOR $sql_content $RESET
+        echo -e "  SQL - Keep it secret, keep it safe........$WARNING"
+        echo -e "$WARNING_COLOR $sql_content $RESET"
     else
-        echo -e "  SQL - Keep it secret, keep it safe........"$FAILED
-        echo -e $FAILED_COLOR  $sql_content $RESET
+        echo -e "  SQL - Keep it secret, keep it safe........$FAILED"
+        echo -e "$FAILED_COLOR  $sql_content $RESET"
     fi
 fi
 
