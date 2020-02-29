@@ -7,22 +7,22 @@ import (
 func TestGetRunningContextTypeLambda(t *testing.T) {
 	runningContextType, err := GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
-		t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		t.Fatalf("Error failed to GetRunningContextType for RunningContextTypeLambda - Error: %v", err)
 	}
 
 	if runningContextType != RunningContextTypeLambda {
-		t.Fatalf("Error failed to GetRunningContextType - Error: %v", "Expected: "+RunningContextTypeLambda)
+		t.Fatalf("Error expected %v as default instead of %v", RunningContextTypeLambda, runningContextType)
 	}
 }
 
 func TestGetRunningContextTypeStandalone(t *testing.T) {
 	runningContextType, err := GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
-		t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		t.Fatalf("Error failed to GetRunningContextType for RunningContextTypeStandalone- Error: %v", err)
 	}
 
 	if runningContextType != RunningContextTypeStandalone {
-		t.Fatalf("Error failed to GetRunningContextType - Error: %v", "Expected: "+RunningContextTypeStandalone)
+		t.Fatalf("Error expected %v as default instead of %v", RunningContextTypeStandalone, runningContextType)
 	}
 }
 
