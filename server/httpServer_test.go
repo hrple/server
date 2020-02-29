@@ -66,23 +66,13 @@ func TestServerInitialisationLambda(t *testing.T) {
 		t.Fatal("Error failed to init server, expected AppServer object")
 	}
 }
-
-func TestServerInitAndRunnningOfStandalone(t *testing.T) {
-	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
+func TestServerInitialisationStandalone(t *testing.T) {
+	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
 		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeLambda, runningContextType, err)
-		}
-	}
-
-	runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
-	if err != nil {
-		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
-			t.Logf("%v", err)
-		} else {
-			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
+			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
 		}
 	}
 
@@ -91,11 +81,34 @@ func TestServerInitAndRunnningOfStandalone(t *testing.T) {
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		t.Fatalf(ErrMsgFailedCreateServerWithError, err)
+		t.Fatal("Error failed to init server")
 	}
 
 	if appServer == nil {
-		t.Fatal(ErrMsgFailedCreateServer)
+		t.Fatal("Error failed to init server, expected AppServer object")
+	}
+}
+
+func TestRunStandaloneServer(t *testing.T) {
+	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
+	if err != nil {
+		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
+			t.Logf("%v", err)
+		} else {
+			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		}
+	}
+
+	appServerConfig := getAppServerConfig()
+	logger := getLogger()
+
+	appServer, err := New(runningContextType, logger, appServerConfig)
+	if err != nil {
+		t.Fatal("Error failed to init server")
+	}
+
+	if appServer == nil {
+		t.Fatal("Error failed to init server, expected AppServer object")
 	}
 
 	serviceRunning := make(chan struct{})
