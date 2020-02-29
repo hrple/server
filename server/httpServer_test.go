@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log"
 	"os"
 	"strings"
@@ -39,7 +40,7 @@ func getLogger() *log.Logger {
 	return logger
 }
 
-func TestStandaloneServerInitialisationLambda(t *testing.T) {
+func TestServerInitialisationLambda(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
 		if strings.Contains(err.Error(), "WARNING:") {
@@ -63,7 +64,7 @@ func TestStandaloneServerInitialisationLambda(t *testing.T) {
 	}
 }
 
-func TestStandaloneServerInitialisationStandalone(t *testing.T) {
+func TestServerInitialisationStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
 		if strings.Contains(err.Error(), "WARNING:") {
@@ -83,5 +84,46 @@ func TestStandaloneServerInitialisationStandalone(t *testing.T) {
 
 	if appServer == nil {
 		t.Fatal("Error failed to init server, expected AppServer object")
+	}
+}
+
+func TestRunStandaloneServer(t *testing.T) {
+	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
+	if err != nil {
+		if strings.Contains(err.Error(), "WARNING:") {
+			t.Logf("%v", err)
+		} else {
+			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		}
+	}
+
+	appServerConfig := getAppServerConfig()
+	logger := getLogger()
+
+	appServer, err := New(runningContextType, logger, appServerConfig)
+	if err != nil {
+		t.Fatal("Error failed to init server")
+	}
+
+	if appServer == nil {
+		t.Fatal("Error failed to init server, expected AppServer object")
+	}
+
+	serviceRunning := make(chan struct{})
+	serviceDone := make(chan struct{})
+	go func() {
+		close(serviceRunning)
+		err = appServer.Run()
+
+		defer close(serviceDone)
+	}()
+
+	if err != nil {
+		t.Fatal("Server never started")
+	}
+
+	err = appServer.httpServer.Shutdown(context.Background())
+	if err != nil {
+		t.Fatal("Server never shutdown")
 	}
 }
