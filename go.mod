@@ -1,3 +1,3 @@
-module github.com/hrple/server
+module github.com/hrple/common
 
 go 1.13
