@@ -40,7 +40,6 @@ func getLogger() *log.Logger {
 }
 
 func TestStandaloneServerInitialisationLambda(t *testing.T) {
-
 	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
 		if strings.Contains(err.Error(), "WARNING:") {
