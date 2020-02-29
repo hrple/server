@@ -67,30 +67,7 @@ func TestServerInitialisationLambda(t *testing.T) {
 	}
 }
 
-func TestServerInitialisationStandalone(t *testing.T) {
-	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
-	if err != nil {
-		if strings.Contains(err.Error(), Warning) {
-			t.Logf("%v", err)
-		} else {
-			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
-		}
-	}
-
-	appServerConfig := getAppServerConfig()
-	logger := getLogger()
-
-	appServer, err := New(runningContextType, logger, appServerConfig)
-	if err != nil {
-		t.Fatalf(ErrMsgFailedCreateServerWithError, err)
-	}
-
-	if appServer == nil {
-		t.Fatal(ErrMsgFailedCreateServer)
-	}
-}
-
-func TestRunStandaloneServer(t *testing.T) {
+func TestServerInitAndRunnningOfStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
 		if strings.Contains(err.Error(), Warning) {
