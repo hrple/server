@@ -4,10 +4,6 @@ import (
 	"testing"
 )
 
-var (
-	errMsgExpectedInsteadOfResult = "Expected %v instead of %v"
-)
-
 func TestGetRunningContextTypeLambda(t *testing.T) {
 	runningContextType, err := GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
@@ -15,7 +11,7 @@ func TestGetRunningContextTypeLambda(t *testing.T) {
 	}
 
 	if runningContextType != RunningContextTypeLambda {
-		t.Fatalf(errMsgExpectedInsteadOfResult, RunningContextTypeLambda, runningContextType)
+		t.Fatalf(ErrMsgExpectedInsteadOfResult, RunningContextTypeLambda, runningContextType)
 	}
 }
 
@@ -26,7 +22,7 @@ func TestGetRunningContextTypeStandalone(t *testing.T) {
 	}
 
 	if runningContextType != RunningContextTypeStandalone {
-		t.Fatalf(errMsgExpectedInsteadOfResult, RunningContextTypeStandalone, runningContextType)
+		t.Fatalf(ErrMsgExpectedInsteadOfResult, RunningContextTypeStandalone, runningContextType)
 	}
 }
 
@@ -37,6 +33,6 @@ func TestGetRunningContextTypeRandom(t *testing.T) {
 	}
 
 	if runningContextType != RunningContextTypeStandalone {
-		t.Fatalf(errMsgExpectedInsteadOfResult, RunningContextTypeStandalone, runningContextType)
+		t.Fatalf(ErrMsgExpectedInsteadOfResult, RunningContextTypeStandalone, runningContextType)
 	}
 }

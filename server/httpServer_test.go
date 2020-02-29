@@ -15,7 +15,10 @@ var (
 	SampleAPIServerKey      = os.Getenv("SAMPLE_API_TLS_KEY_FILE")
 )
 
-const ApplicationName = "HRPLE-SERVER-TEST"
+const (
+	ApplicationName = "HRPLE-SERVER-TEST"
+	Warning         = "WARNING"
+)
 
 func getAppServerConfig() *ApplicationServerConfig {
 	defaultReadTimeout, _ := time.ParseDuration("5s")
@@ -43,10 +46,10 @@ func getLogger() *log.Logger {
 func TestServerInitialisationLambda(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
-		if strings.Contains(err.Error(), "WARNING:") {
+		if strings.Contains(err.Error(), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeLambda, runningContextType, err)
 		}
 	}
 
@@ -67,10 +70,10 @@ func TestServerInitialisationLambda(t *testing.T) {
 func TestServerInitialisationStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
-		if strings.Contains(err.Error(), "WARNING:") {
+		if strings.Contains(err.Error(), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
 		}
 	}
 
@@ -79,21 +82,21 @@ func TestServerInitialisationStandalone(t *testing.T) {
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		t.Fatal("Error failed to init server")
+		t.Fatalf(ErrMsgFailedCreateServerWithError, err)
 	}
 
 	if appServer == nil {
-		t.Fatal("Error failed to init server, expected AppServer object")
+		t.Fatal(ErrMsgFailedCreateServer)
 	}
 }
 
 func TestRunStandaloneServer(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
-		if strings.Contains(err.Error(), "WARNING:") {
+		if strings.Contains(err.Error(), Warning) {
 			t.Logf("%v", err)
 		} else {
-			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeStandalone, runningContextType, err)
 		}
 	}
 
@@ -102,11 +105,11 @@ func TestRunStandaloneServer(t *testing.T) {
 
 	appServer, err := New(runningContextType, logger, appServerConfig)
 	if err != nil {
-		t.Fatal("Error failed to init server")
+		t.Fatalf(ErrMsgFailedCreateServerWithError, err)
 	}
 
 	if appServer == nil {
-		t.Fatal("Error failed to init server, expected AppServer object")
+		t.Fatal(ErrMsgFailedCreateServer)
 	}
 
 	serviceRunning := make(chan struct{})
