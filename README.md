@@ -25,6 +25,8 @@ Hopefully everything is green :)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=coverage)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=ncloc)](https://sonarcloud.io/dashboard?id=hrple_common)
 
+[![codecov](https://codecov.io/gh/hrple/common/branch/master/graph/badge.svg)](https://codecov.io/gh/hrple/common)
+
 ### Prerequisites
 
 - Golang
