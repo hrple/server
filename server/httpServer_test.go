@@ -12,17 +12,53 @@ var (
 	SampleAPIServiceAddress = os.Getenv("SAMPLE_API_SERVICE_ADDR")
 	SampleAPIServerCert     = os.Getenv("SAMPLE_API_TLS_CERT_FILE")
 	SampleAPIServerKey      = os.Getenv("SAMPLE_API_TLS_KEY_FILE")
-	SampleAPIRunningContext = os.Getenv("SAMPLE_API_RUNNING_CONTEXT")
 )
 
 const ApplicationName = "HRPLE-SERVER-TEST"
 
-func TestStandaloneServerInitialisation(t *testing.T) {
+func TestStandaloneServerInitialisationLambda(t *testing.T) {
 	defaultReadTimeout, _ := time.ParseDuration("5s")
 	defaultWriteTimeout, _ := time.ParseDuration("10s")
 	defaultIdleTimeout, _ := time.ParseDuration("120s")
 
-	var runningContextType, err = GetRunningContextType(SampleAPIRunningContext)
+	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
+	if err != nil {
+		if strings.Contains(err.Error(), "WARNING:") {
+			t.Logf("%v", err)
+		} else {
+			t.Fatalf("Error failed to GetRunningContextType - Error: %v", err)
+		}
+	}
+
+	appServerConfig := &ApplicationServerConfig{
+		ServerAddress: SampleAPIServiceAddress,
+		TLSCertFile:   SampleAPIServerCert,
+		TLSKeyFile:    SampleAPIServerKey,
+		ReadTimeout:   defaultReadTimeout,
+		WriteTimeout:  defaultWriteTimeout,
+		IdleTimeout:   defaultIdleTimeout,
+	}
+
+	logPrefix := ApplicationName + " : "
+	logger := log.New(os.Stdout, logPrefix, log.LstdFlags|log.Lshortfile)
+
+	appServer, err := New(runningContextType, logger, appServerConfig)
+	if err != nil {
+		//t.Fatal("Error failed to init server")
+		t.Logf("Not implemented - Error : %v", err)
+	}
+
+	if appServer == nil {
+		t.Fatal("Error failed to init server, expected AppServer object")
+	}
+}
+
+func TestStandaloneServerInitialisationStandalone(t *testing.T) {
+	defaultReadTimeout, _ := time.ParseDuration("5s")
+	defaultWriteTimeout, _ := time.ParseDuration("10s")
+	defaultIdleTimeout, _ := time.ParseDuration("120s")
+
+	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
 	if err != nil {
 		if strings.Contains(err.Error(), "WARNING:") {
 			t.Logf("%v", err)
@@ -48,7 +84,9 @@ func TestStandaloneServerInitialisation(t *testing.T) {
 		t.Fatal("Error failed to init server")
 	}
 
-	t.Log(appServer)
+	if appServer == nil {
+		t.Fatal("Error failed to init server, expected AppServer object")
+	}
 
 	//appServer.Run()
 

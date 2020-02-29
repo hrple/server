@@ -48,8 +48,8 @@ func New(runningContextType string, logger *log.Logger, config *ApplicationServe
 		err = errors.New("Warning. LAMBDA not operational yet")
 	}
 
-	if runningContextType == RunningContextTypeLambda {
-		err = errors.New("Warning. TLS not operational yet")
+	if runningContextType == RunningContextTypeStandalone {
+		//err = errors.New("Warning. TLS not operational yet")
 		mux := http.NewServeMux()
 
 		httpServer := &http.Server{
