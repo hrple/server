@@ -43,6 +43,30 @@ func getLogger() *log.Logger {
 	return logger
 }
 
+func TestServerInitialisationLambda(t *testing.T) {
+	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
+	if err != nil {
+		if strings.Contains(strings.ToUpper(err.Error()), Warning) {
+			t.Logf("%v", err)
+		} else {
+			t.Fatalf(ErrMsgExpectedInsteadOfResultWithError, RunningContextTypeLambda, runningContextType, err)
+		}
+	}
+
+	appServerConfig := getAppServerConfig()
+	logger := getLogger()
+
+	appServer, err := New(runningContextType, logger, appServerConfig)
+	if err != nil {
+		//t.Fatal("Error failed to init server")
+		t.Logf("Not implemented - Error : %v", err)
+	}
+
+	if appServer == nil {
+		t.Fatal("Error failed to init server, expected AppServer object")
+	}
+}
+
 func TestServerInitAndRunnningOfStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeLambda)
 	if err != nil {
