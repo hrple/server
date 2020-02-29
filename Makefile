@@ -14,4 +14,4 @@ setup-build-env:
 	./scripts/setup-build-env.sh
 
 init:
-	git config core.hooksPath .githooks
+	./scripts/init.sh
