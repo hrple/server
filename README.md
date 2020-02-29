@@ -25,6 +25,7 @@ Hopefully everything is green :)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=ncloc)](https://sonarcloud.io/dashboard?id=hrple_common)
 
 [![codecov](https://codecov.io/gh/hrple/common/branch/master/graph/badge.svg)](https://codecov.io/gh/hrple/common)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dac70d9c38934e21820117ee029677bc)](https://www.codacy.com/gh/hrple/common?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hrple/common&amp;utm_campaign=Badge_Grade)
 
 ### Prerequisites
 
