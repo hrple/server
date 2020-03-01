@@ -34,12 +34,14 @@ jobs:
           fail_ci_if_error: true
 
   sonarCloudTrigger:
-    # needs: build
+    needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
     steps:
       - name: Clone Repository
         uses: actions/checkout@master
+        with:
+          fetch-depth: 0
       - name: Download code coverage results
         uses: actions/download-artifact@v1
         with:
