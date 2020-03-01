@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//ApplicationServerConfig allows for the configuration of the App Server
+// ApplicationServerConfig allows for the configuration of the App Server
 type ApplicationServerConfig struct {
 	ServerAddress string
 	TLSCertFile   string
@@ -17,7 +17,7 @@ type ApplicationServerConfig struct {
 	IdleTimeout   time.Duration
 }
 
-//ApplicationServer is a wrapper for the required loggers, handlers, https server etc
+// ApplicationServer is a wrapper for the required loggers, handlers, https server etc
 type ApplicationServer struct {
 	logger     *log.Logger
 	mux        *http.ServeMux
@@ -25,7 +25,7 @@ type ApplicationServer struct {
 	config     *ApplicationServerConfig
 }
 
-//Run starts the ApplicationServer
+// Run starts the ApplicationServer
 func (server *ApplicationServer) Run() error {
 	server.logger.Println("Info -", "Run")
 	err := server.httpServer.ListenAndServe()
@@ -33,7 +33,7 @@ func (server *ApplicationServer) Run() error {
 	return err
 }
 
-//New instantiates a new ApplicationServer based on the ApplicationServerConfig
+// New instantiates a new ApplicationServer based on the ApplicationServerConfig
 func New(runningContextType string, logger *log.Logger, config *ApplicationServerConfig) (*ApplicationServer, error) {
 	var err error
 
@@ -45,11 +45,11 @@ func New(runningContextType string, logger *log.Logger, config *ApplicationServe
 	}
 
 	if runningContextType == RunningContextTypeLambda {
-		err = errors.New("Warning. LAMBDA not operational yet")
+		err = errors.New("warning lambda not operational yet")
 	}
 
 	if runningContextType == RunningContextTypeStandalone {
-		//err = errors.New("Warning. TLS not operational yet")
+		// TODO err = errors.New("Warning. TLS not operational yet")
 		mux := http.NewServeMux()
 
 		httpServer := &http.Server{

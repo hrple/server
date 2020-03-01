@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-//Convert to context object?
+// Convert to context object?
 const (
 	RunningContextTypeLambda     = "LAMBDA"
 	RunningContextTypeStandalone = "STANDALONE"

@@ -6,35 +6,9 @@
 PATH=${PATH}:$(go env GOPATH)/bin
 export PATH
 
-echo 
 gofmt -l -s -w ./
 
-golint ./...
-
-golangci-lint run \
-    --enable=bodyclose \
-    --enable=gofmt \
-    --enable=golint \
-    --enable=rowserrcheck \
-    --enable=gosec \
-    --enable=unconvert \
-    --enable=dupl \
-    --enable=goconst \
-    --enable=gocyclo \
-    --enable=gocognit\
-    --enable=goimports \
-    --enable=maligned \
-    --enable=depguard \
-    --enable=misspell \
-    --enable=unparam \
-    --enable=scopelint \
-    --enable=gocritic \
-    --enable=whitespace \
-    --enable=goprintffuncname \
-    --enable=gomnd
-    #--enable=funlen \ -- TODO : Implement
-    # --enable=godox \ -- TODO : Implement
-    # --enable=gochecknoglobals \  -- TODO : Convert the errors outputted here to objects?
+golangci-lint run     
 
 sql_content=$(safesql -v ./)
 sql_res=$?
