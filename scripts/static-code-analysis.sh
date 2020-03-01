@@ -6,6 +6,7 @@
 PATH=${PATH}:$(go env GOPATH)/bin
 export PATH
 
+go mod tidy
 gofmt -l -s -w ./
 
 golangci-lint run     
