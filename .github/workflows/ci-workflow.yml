@@ -26,6 +26,22 @@ jobs:
           file: ./bin/code-coverage-report-codecov.out
           name: codecov-common
           fail_ci_if_error: true
+      # - name: Analyze with SonarCloud
+      #   uses: sonarsource/sonarcloud-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   with:
+      #     fail_ci_if_error: true
+
+  sonarCloudTrigger:
+    name: SonarCloud Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         env:
