@@ -12,16 +12,10 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.14
+          fetch-depth: 0
         id: go
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
-      - name: Run Tests & Generate Coverage (SonarCloud)
-        run: make test-coverage-sonarcloud
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
-        with:
-          name: code-coverage-report-sonarcloud.out
-          path: bin
       - name: Install Deps
         run: make init
       - name: Run Tests & Generate Coverage
@@ -32,9 +26,15 @@ jobs:
           file: ./bin/code-coverage-report-codecov.out
           name: codecov-common
           fail_ci_if_error: true
+      # - name: Analyze with SonarCloud
+      #   uses: sonarsource/sonarcloud-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   with:
+      #     fail_ci_if_error: true
 
   sonarCloudTrigger:
-    needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
     steps:
@@ -42,13 +42,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      # - name: Download code coverage results
-      #   uses: actions/download-artifact@v1
-      #   with:
-      #     name: code-coverage-report-sonarcloud.out
-      #     path: bin
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          fail_ci_if_error: true
