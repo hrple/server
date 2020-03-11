@@ -1,12 +1,10 @@
 package server
 
 import (
-	"context"
 	"log"
 	"os"
 	"strings"
 	"testing"
-	"time"
 )
 
 var (
@@ -21,17 +19,17 @@ const (
 )
 
 func getAppServerConfig() *ApplicationServerConfig {
-	defaultReadTimeout, _ := time.ParseDuration("5s")
-	defaultWriteTimeout, _ := time.ParseDuration("10s")
-	defaultIdleTimeout, _ := time.ParseDuration("120s")
+	defaultReadTimeout := 5
+	defaultWriteTimeout := 10
+	defaultIdleTimeout := 120
 
 	appServerConfig := &ApplicationServerConfig{
-		ServerAddress: SampleAPIServiceAddress,
-		TLSCertFile:   SampleAPIServerCert,
-		TLSKeyFile:    SampleAPIServerKey,
-		ReadTimeout:   defaultReadTimeout,
-		WriteTimeout:  defaultWriteTimeout,
-		IdleTimeout:   defaultIdleTimeout,
+		ServerAddress:         SampleAPIServiceAddress,
+		TLSCertFile:           SampleAPIServerCert,
+		TLSKeyFile:            SampleAPIServerKey,
+		ReadTimeoutInSeconds:  defaultReadTimeout,
+		WriteTimeoutInSeconds: defaultWriteTimeout,
+		IdleTimeoutInSeconds:  defaultIdleTimeout,
 	}
 
 	return appServerConfig
@@ -56,14 +54,14 @@ func TestServerInitialisationLambda(t *testing.T) {
 	appServerConfig := getAppServerConfig()
 	logger := getLogger()
 
-	appServer, err := New(runningContextType, logger, appServerConfig)
-	if err != nil {
-		t.Logf("Not implemented - Error : %v", err)
-	}
+	//appServer, err := New(runningContextType, logger, appServerConfig)
+	//if err != nil {
+	t.Logf("Not implemented - Error : %v", err)
+	//}
 
-	if appServer == nil {
-		t.Fatal(ErrMsgFailedCreateServer)
-	}
+	//if appServer == nil {
+	t.Fatal(ErrMsgFailedCreateServer)
+	//}
 }
 func TestServerInitialisationStandalone(t *testing.T) {
 	var runningContextType, err = GetRunningContextType(RunningContextTypeStandalone)
@@ -78,14 +76,14 @@ func TestServerInitialisationStandalone(t *testing.T) {
 	appServerConfig := getAppServerConfig()
 	logger := getLogger()
 
-	appServer, err := New(runningContextType, logger, appServerConfig)
-	if err != nil {
-		t.Fatal(ErrMsgFailedCreateServerWithError, err)
-	}
+	//appServer, err := New(runningContextType, logger, appServerConfig)
+	//if err != nil {
+	t.Fatal(ErrMsgFailedCreateServerWithError, err)
+	//}
 
-	if appServer == nil {
-		t.Fatal(ErrMsgFailedCreateServer)
-	}
+	//if appServer == nil {
+	t.Fatal(ErrMsgFailedCreateServer)
+	//}
 }
 
 func TestRunStandaloneServer(t *testing.T) {
@@ -101,20 +99,20 @@ func TestRunStandaloneServer(t *testing.T) {
 	appServerConfig := getAppServerConfig()
 	logger := getLogger()
 
-	appServer, err := New(runningContextType, logger, appServerConfig)
-	if err != nil {
-		t.Fatal(ErrMsgFailedCreateServerWithError, err)
-	}
+	//appServer, err := New(runningContextType, logger, appServerConfig)
+	//if err != nil {
+	t.Fatal(ErrMsgFailedCreateServerWithError, err)
+	//}
 
-	if appServer == nil {
-		t.Fatal(ErrMsgFailedCreateServer)
-	}
+	//if appServer == nil {
+	t.Fatal(ErrMsgFailedCreateServer)
+	//}
 
 	serviceRunning := make(chan struct{})
 	serviceDone := make(chan struct{})
 	go func() {
 		close(serviceRunning)
-		err = appServer.Run()
+		//err = appServer.Run()
 
 		defer close(serviceDone)
 	}()
@@ -123,8 +121,8 @@ func TestRunStandaloneServer(t *testing.T) {
 		t.Fatal("Server never started")
 	}
 
-	err = appServer.httpServer.Shutdown(context.Background())
-	if err != nil {
-		t.Fatal("Server never shutdown")
-	}
+	//err = appServer.httpServer.Shutdown(context.Background())
+	//if err != nil {
+	t.Fatal("Server never shutdown")
+	//}
 }
