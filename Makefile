@@ -5,7 +5,7 @@ code-check: setup-build-env
 
 testOnly:
 	rm -f bin/code-coverage-report.html
-	go test -v -race -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./server && go tool cover -html=bin/code-coverage-report-codecov.out -o bin/code-coverage-report.html
+	go test -v -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./server && go tool cover -html=bin/code-coverage-report-codecov.out -o bin/code-coverage-report.html
 
 test: code-check
 	rm -f bin/code-coverage-report.html

@@ -20,6 +20,8 @@ func TestServerStart(t *testing.T) {
 		defer close(serviceDone)
 	}()
 
+	<-serviceRunning
+
 	if err != nil {
 		t.Fatalf("Server never started %v", err)
 	}
@@ -28,6 +30,8 @@ func TestServerStart(t *testing.T) {
 	if err != nil {
 		t.Fatal("Server never shutdown")
 	}
+
+	<-serviceDone
 }
 
 func TestServerGetConfiguration(t *testing.T) {
