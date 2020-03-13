@@ -15,6 +15,7 @@ func TestServerStart(t *testing.T) {
 	})
 
 	var err error
+	var errStop error
 	go func() {
 		close(serviceRunning)
 		err = Start(":5868")
@@ -27,10 +28,9 @@ func TestServerStart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Server never started %v", err)
 	}
-
-	err = Stop()
-	if err != nil {
-		t.Fatal("Server never shutdown")
+	errStop = Stop()
+	if errStop != nil {
+		t.Fatalf("Server never started %v", errStop)
 	}
 
 	<-serviceDone

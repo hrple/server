@@ -10,7 +10,6 @@ import (
 
 // NewServer creates an instance of the app server
 func NewServer() *ApplicationServer {
-
 	server := &ApplicationServer{
 		Config: Config,
 		Logger: log.New(os.Stdout, "", log.Ldate|log.Ltime),
@@ -28,6 +27,7 @@ func NewServer() *ApplicationServer {
 // Start will start the server eventually
 func (s *ApplicationServer) Start(addr string) error {
 	s.Config.ServerAddress = addr
+	s.httpServer.Addr = s.Config.ServerAddress
 
 	err := s.httpServer.ListenAndServe()
 	return err
