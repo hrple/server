@@ -9,9 +9,11 @@ import (
 func TestServerStart(t *testing.T) {
 	serviceRunning := make(chan struct{})
 	serviceDone := make(chan struct{})
+
 	Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+
 	var err error
 	go func() {
 		close(serviceRunning)

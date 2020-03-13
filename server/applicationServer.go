@@ -10,19 +10,24 @@ import (
 
 // NewServer creates an instance of the app server
 func NewServer() *ApplicationServer {
-	return &ApplicationServer{
+
+	server := &ApplicationServer{
 		Config: Config,
 		Logger: log.New(os.Stdout, "", log.Ldate|log.Ltime),
 		router: http.NewServeMux(),
 	}
+
+	server.httpServer = http.Server{
+		Addr:    server.Config.ServerAddress,
+		Handler: server.router,
+	}
+
+	return server
 }
 
 // Start will start the server eventually
 func (s *ApplicationServer) Start(addr string) error {
-	s.httpServer = http.Server{
-		Addr:    addr,
-		Handler: s.router,
-	}
+	s.Config.ServerAddress = addr
 
 	err := s.httpServer.ListenAndServe()
 	return err

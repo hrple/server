@@ -1,0 +1,41 @@
+brettmostert@BM-LT:/d/workspaces/hrple/common$ go test -race -count=1 -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./server
+==================
+WARNING: DATA RACE
+Write at 0x00c00011ad30 by goroutine 8:
+  github.com/hrple/common/server.TestServerStart.func2()       
+      /d/workspaces/hrple/common/server/server_test.go:19 +0x8e
+
+Previous write at 0x00c00011ad30 by goroutine 7:
+  github.com/hrple/common/server.TestServerStart()
+      /d/workspaces/hrple/common/server/server_test.go:30 +0x171
+  testing.tRunner()
+      /usr/local/go/src/testing/testing.go:992 +0x1eb
+
+Goroutine 8 (running) created at:
+  github.com/hrple/common/server.TestServerStart()
+      /d/workspaces/hrple/common/server/server_test.go:17 +0x117
+  testing.tRunner()
+      /usr/local/go/src/testing/testing.go:992 +0x1eb
+
+Goroutine 7 (running) created at:
+  testing.(*T).Run()
+      /usr/local/go/src/testing/testing.go:1043 +0x660
+  testing.runTests.func1()
+      /usr/local/go/src/testing/testing.go:1285 +0xa6
+  testing.tRunner()
+      /usr/local/go/src/testing/testing.go:992 +0x1eb
+  testing.runTests()
+      /usr/local/go/src/testing/testing.go:1283 +0x527
+  testing.(*M).Run()
+      /usr/local/go/src/testing/testing.go:1200 +0x2ff
+  main.main()
+      _testmain.go:104 +0x337
+==================
+--- FAIL: TestServerStart (0.01s)
+    testing.go:906: race detected during execution of test
+2020/03/13 15:01:18 Executed: /testGet Execution Time: 800ns Method : GET RemoteAddr:
+2020/03/13 15:01:18 Executed: /testPut Execution Time: 900ns Method : PUT RemoteAddr:
+FAIL
+coverage: 100.0% of statements
+FAIL    github.com/hrple/common/server  0.026s
+FAIL
