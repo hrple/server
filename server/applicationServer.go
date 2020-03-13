@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 )
 
@@ -16,10 +17,16 @@ func NewServer() *ApplicationServer {
 		router: http.NewServeMux(),
 	}
 
+	server.router.Handle("/", server)
+
 	server.httpServer = http.Server{
 		Addr:    server.Config.ServerAddress,
 		Handler: server.router,
 	}
+
+	// MaxIdleConns:       10,
+	// IdleConnTimeout:    30 * time.Second,
+	// DisableCompression: true,
 
 	return server
 }
@@ -41,63 +48,87 @@ func (s *ApplicationServer) Stop() error {
 
 // Get adds a handler for the 'GET' http method for server s.
 func (s *ApplicationServer) Get(route string, f func(http.ResponseWriter, *http.Request)) {
-	s.router.HandleFunc(route, s.get(f))
+	s.addRoute(route, http.MethodGet, f)
 }
 
-func (s *ApplicationServer) get(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ctime := time.Now()
+// Put adds a handler for the 'PUT' http method for server s.
+func (s *ApplicationServer) Put(route string, f func(http.ResponseWriter, *http.Request)) {
+	s.addRoute(route, http.MethodPut, f)
+}
 
-		defer s.Logger.Printf("Executed: %v%v Execution Time: %v Method : %v RemoteAddr: %v",
-			r.Host, r.URL, time.Since(ctime), r.Method, r.RemoteAddr)
+// ServeHTTP is the interface method for Go's http server package
+func (s *ApplicationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ctime := time.Now()
+	route := s.findRouteHandler(w, r)
+	if route == nil {
+		http.NotFound(w, r)
+		return
+	}
 
-		// should maybe add this later s.before(w, r)
+	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
 
-		if r.Method == http.MethodGet {
-			h(w, r)
-		} else {
-			http.NotFound(w, r)
+	// should maybe add this later s.before(w, r)
+	// should maybe add this later  s.after(w, r)
+	route.httpHandler(w, r)
+	s.Logger.Printf("Executed: %v%v Execution Time: %v Method : %v RemoteAddr: %v",
+		r.Host, r.URL, time.Since(ctime), r.Method, r.RemoteAddr)
+}
+
+func (s *ApplicationServer) findRouteHandler(w http.ResponseWriter, r *http.Request) (selectedRoute *route) {
+	requestPath := r.URL.Path
+
+	if w == nil {
+		return nil
+	}
+
+	for i := 0; i < len(s.routes); i++ {
+		currentRoute := s.routes[i]
+		cr := currentRoute.cr
+
+		// if the methods don't match, skip this handler
+		if r.Method != currentRoute.method {
+			continue
 		}
 
-		// should maybe add this later  s.after(w, r)
+		if !cr.MatchString(requestPath) {
+			continue
+		}
+
+		match := cr.FindStringSubmatch(requestPath)
+
+		if len(match[0]) != len(requestPath) {
+			continue
+		}
+
+		if currentRoute.httpHandler != nil {
+			selectedRoute = &currentRoute
+			return selectedRoute
+		}
+
+		return nil
 	}
+
+	return nil
 }
 
-//	func (s *ApplicationServer) process(h http.HandlerFunc) http.HandlerFunc {
-//	return func(w http.ResponseWriter, r *http.Request) {
-//		ctime := time.Now()
-//		defer s.Logger.Printf("Executed: %v%v Execution Time: %v Method : %v RemoteAddr: %v",
-//			r.Host, r.URL, time.Since(ctime), r.Method, r.RemoteAddr)
-//		s.before(w, r)
-//		h(w, r)
-//		s.after(w, r)
-//	}
-//	}
-//
+func (s *ApplicationServer) addRoute(r, method string, handler func(http.ResponseWriter, *http.Request)) {
+	cr, err := regexp.Compile(r)
+	if err != nil {
+		s.Logger.Printf("Error in route regex %q\n", r)
+		return
+	}
+
+	s.routes = append(s.routes, route{r: r, cr: cr, method: method, httpHandler: handler})
+}
+
 // func (s *ApplicationServer) before(w http.ResponseWriter, r *http.Request) {
 //	// _, _ = fmt.Fprintf(w, "before %v \n", r.URL)
 //	s.Logger.Printf("in before method \n")
 // }
 
-// url := r.URL.String()
-// path := strings.Split(url, "/")
-
-// Add this for basic param injection {userId}, add route will need to be implemented, but for now this is fine.
-// for _, element := range path {
-//	if (element != "std" && element != "") {
-//		fmt.Fprintf(w, "My path Element is: %v \n", element)
-//	}
-// }
 // func (s *ApplicationServer) after(w http.ResponseWriter, r *http.Request) {
 //	// _, _ = fmt.Fprintf(w, "after %v \n", r.URL)
 //	s.Logger.Printf("in after method \n")
-// }
-
-// TODO Add middle ware for logging and time taken to process, then add stats ie avg time taken
-// ServeHTTP is the interface method for Go's http server package
-// func (s *ApplicationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-//	 s.Process(c, req)
-//	w.Write([]byte("foo ServeHTTP"))
 // }
 
 // Default values for configuration
@@ -121,8 +152,16 @@ type ApplicationServerConfig struct {
 type ApplicationServer struct {
 	Logger     *log.Logger
 	router     *http.ServeMux
+	routes     []route
 	Config     *ApplicationServerConfig
 	httpServer http.Server
+}
+
+type route struct {
+	r           string
+	cr          *regexp.Regexp
+	method      string
+	httpHandler func(http.ResponseWriter, *http.Request)
 }
 
 // Config the default configuration for the server

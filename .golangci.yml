@@ -4,9 +4,9 @@ linters-settings:
     packages:
       # logging is allowed only by logutils.Log, logrus
       # is allowed to use only in logutils package
-      - github.com/sirupsen/logrus
+      #- github.com/sirupsen/logrus
     packages-with-error-message:
-      - github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
+      #- github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
   dupl:
     threshold: 100
   funlen:
@@ -44,10 +44,10 @@ linters-settings:
     settings:
       printf:
         funcs:
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+          # - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          # - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          # - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          # - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
   lll:
     line-length: 140
   maligned:
@@ -105,6 +105,7 @@ linters:
 
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
+  # exclude-use-default: false
   exclude-rules:
     - path: _test\.go
       linters:

@@ -32,4 +32,9 @@ func Get(route string, f func(http.ResponseWriter, *http.Request)) {
 	applicationServer.Get(route, f)
 }
 
+// Put adds a handler for the 'PUT' http method for server s.
+func Put(route string, f func(http.ResponseWriter, *http.Request)) {
+	applicationServer.Put(route, f)
+}
+
 var applicationServer = NewServer()
