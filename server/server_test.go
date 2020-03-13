@@ -54,13 +54,15 @@ func TestServerGetLogger(t *testing.T) {
 var testServer = NewServer()
 
 func TestServerGet(t *testing.T) {
-	testServer.Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
+	testServer.Get("/test", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+		t.Log("GET")
 	})
 
-	request, _ := http.NewRequest(http.MethodGet, "/testGet", nil)
+	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	response := httptest.NewRecorder()
-	testServer.router.ServeHTTP(response, request)
+
+	testServer.ServeHTTP(response, request)
 
 	if response.Code != http.StatusOK {
 		t.Fatalf("Something wrong, code : %v", response.Code)
@@ -68,16 +70,17 @@ func TestServerGet(t *testing.T) {
 }
 
 func TestServerPut(t *testing.T) {
-	testServer.Get("/testPut", func(w http.ResponseWriter, r *http.Request) {
+	testServer.Put("/test", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+		t.Log("PUT")
 	})
 
-	request, _ := http.NewRequest(http.MethodPut, "/testPut", nil)
+	request, _ := http.NewRequest(http.MethodPut, "/test", nil)
 	response := httptest.NewRecorder()
 
-	testServer.router.ServeHTTP(response, request)
+	testServer.ServeHTTP(response, request)
 
-	if response.Code != http.StatusNotFound {
+	if response.Code != http.StatusOK {
 		t.Fatalf("Something wrong")
 	}
 }
