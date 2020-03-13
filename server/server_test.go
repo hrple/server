@@ -7,7 +7,27 @@ import (
 )
 
 func TestServerStart(t *testing.T) {
-	go Start(":5868")
+	serviceRunning := make(chan struct{})
+	serviceDone := make(chan struct{})
+	Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	var err error
+	go func() {
+		close(serviceRunning)
+		err = Start(":5868")
+
+		defer close(serviceDone)
+	}()
+
+	if err != nil {
+		t.Fatalf("Server never started %v", err)
+	}
+
+	err = Stop()
+	if err != nil {
+		t.Fatal("Server never shutdown")
+	}
 }
 
 func TestServerGetConfiguration(t *testing.T) {
@@ -25,32 +45,33 @@ func TestServerGetLogger(t *testing.T) {
 	}
 }
 
+var testServer = NewServer()
+
 func TestServerGet(t *testing.T) {
-	Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
+	testServer.Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
 	request, _ := http.NewRequest(http.MethodGet, "/testGet", nil)
 	response := httptest.NewRecorder()
-	applicationServer.router.ServeHTTP(response, request)
+	testServer.router.ServeHTTP(response, request)
 
 	if response.Code != http.StatusOK {
-		t.Fatalf("Something wrong")
+		t.Fatalf("Something wrong, code : %v", response.Code)
 	}
 }
 
 func TestServerPut(t *testing.T) {
-	Get("/testPut", func(w http.ResponseWriter, r *http.Request) {
+	testServer.Get("/testPut", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
 	request, _ := http.NewRequest(http.MethodPut, "/testPut", nil)
 	response := httptest.NewRecorder()
 
-	applicationServer.router.ServeHTTP(response, request)
+	testServer.router.ServeHTTP(response, request)
 
 	if response.Code != http.StatusNotFound {
 		t.Fatalf("Something wrong")
 	}
 }
-

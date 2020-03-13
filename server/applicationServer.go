@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -18,8 +19,24 @@ func NewServer() *ApplicationServer {
 
 // Start will start the server eventually
 func (s *ApplicationServer) Start(addr string) error {
-	err := http.ListenAndServe(addr, s.router)
+	s.httpServer = http.Server{
+		Addr:    addr,
+		Handler: s.router,
+	}
+
+	err := s.httpServer.ListenAndServe()
 	return err
+}
+
+// Stop will stop the server eventually
+func (s *ApplicationServer) Stop() error {
+	err := s.httpServer.Shutdown(context.Background())
+	return err
+}
+
+// Get adds a handler for the 'GET' http method for server s.
+func (s *ApplicationServer) Get(route string, f func(http.ResponseWriter, *http.Request)) {
+	s.router.HandleFunc(route, s.get(f))
 }
 
 func (s *ApplicationServer) get(h http.HandlerFunc) http.HandlerFunc {
@@ -29,7 +46,7 @@ func (s *ApplicationServer) get(h http.HandlerFunc) http.HandlerFunc {
 		defer s.Logger.Printf("Executed: %v%v Execution Time: %v Method : %v RemoteAddr: %v",
 			r.Host, r.URL, time.Since(ctime), r.Method, r.RemoteAddr)
 
-		s.before(w, r)
+		// should maybe add this later s.before(w, r)
 
 		if r.Method == http.MethodGet {
 			h(w, r)
@@ -37,7 +54,7 @@ func (s *ApplicationServer) get(h http.HandlerFunc) http.HandlerFunc {
 			http.NotFound(w, r)
 		}
 
-		s.after(w, r)
+		// should maybe add this later  s.after(w, r)
 	}
 }
 
@@ -51,11 +68,11 @@ func (s *ApplicationServer) get(h http.HandlerFunc) http.HandlerFunc {
 //		s.after(w, r)
 //	}
 //	}
-
-func (s *ApplicationServer) before(w http.ResponseWriter, r *http.Request) {
-	//_, _ = fmt.Fprintf(w, "before %v \n", r.URL)
-	s.Logger.Printf("in before method \n")
-}
+//
+// func (s *ApplicationServer) before(w http.ResponseWriter, r *http.Request) {
+//	// _, _ = fmt.Fprintf(w, "before %v \n", r.URL)
+//	s.Logger.Printf("in before method \n")
+// }
 
 // url := r.URL.String()
 // path := strings.Split(url, "/")
@@ -66,10 +83,10 @@ func (s *ApplicationServer) before(w http.ResponseWriter, r *http.Request) {
 //		fmt.Fprintf(w, "My path Element is: %v \n", element)
 //	}
 // }
-func (s *ApplicationServer) after(w http.ResponseWriter, r *http.Request) {
-	//_, _ = fmt.Fprintf(w, "after %v \n", r.URL)
-	s.Logger.Printf("in after method \n")
-}
+// func (s *ApplicationServer) after(w http.ResponseWriter, r *http.Request) {
+//	// _, _ = fmt.Fprintf(w, "after %v \n", r.URL)
+//	s.Logger.Printf("in after method \n")
+// }
 
 // TODO Add middle ware for logging and time taken to process, then add stats ie avg time taken
 // ServeHTTP is the interface method for Go's http server package
@@ -97,9 +114,10 @@ type ApplicationServerConfig struct {
 
 // ApplicationServer is a wrapper for the required loggers, handlers, https server etc
 type ApplicationServer struct {
-	Logger *log.Logger
-	router *http.ServeMux
-	Config *ApplicationServerConfig
+	Logger     *log.Logger
+	router     *http.ServeMux
+	Config     *ApplicationServerConfig
+	httpServer http.Server
 }
 
 // Config the default configuration for the server

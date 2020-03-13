@@ -11,6 +11,12 @@ func Start(address string) error {
 	return err
 }
 
+// Stop will stop the server eventually
+func Stop() error {
+	err := applicationServer.Stop()
+	return err
+}
+
 // GetConfiguration gets the cofiguration
 func GetConfiguration() *ApplicationServerConfig {
 	return applicationServer.Config
@@ -23,7 +29,7 @@ func GetLogger() *log.Logger {
 
 // Get adds a handler for the 'GET' http method for server s.
 func Get(route string, f func(http.ResponseWriter, *http.Request)) {
-	applicationServer.router.HandleFunc(route, applicationServer.get(f))
+	applicationServer.Get(route, f)
 }
 
 var applicationServer = NewServer()

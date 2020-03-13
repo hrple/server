@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/hrple/common/server"
 	"net/http"
+
+	"github.com/hrple/common/server"
 )
 
 func main() {
