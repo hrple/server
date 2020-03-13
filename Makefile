@@ -3,6 +3,9 @@
 code-check: setup-build-env
 	./scripts/static-code-analysis.sh
 
+testOnly:
+	go test -v -race -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./... && go tool cover -html=bin/code-coverage-report-codecov.out -o bin/code-coverage-report.html
+
 test: code-check
 	go test -v -race -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./... && go tool cover -html=bin/code-coverage-report-codecov.out -o bin/code-coverage-report.html
 
