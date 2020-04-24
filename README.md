@@ -1,6 +1,6 @@
 # Hrple - Common
 
-**Common** contains all the common libraries used with the hrlp ecosystem.
+**Common** contains all the common libraries used with the hrlpe ecosystem.
 
 ## Motivation
 
