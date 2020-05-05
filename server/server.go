@@ -28,13 +28,13 @@ func GetLogger() *log.Logger {
 }
 
 // Get adds a handler for the 'GET' http method for server s.
-func Get(route string, f func(http.ResponseWriter, *http.Request)) {
-	applicationServer.Get(route, f)
+func Get(route string, f func(http.ResponseWriter, *http.Request)) error {
+	return applicationServer.Get(route, f)
 }
 
 // Put adds a handler for the 'PUT' http method for server s.
-func Put(route string, f func(http.ResponseWriter, *http.Request)) {
-	applicationServer.Put(route, f)
+func Put(route string, f func(http.ResponseWriter, *http.Request)) error {
+	return applicationServer.Put(route, f)
 }
 
 var applicationServer = NewServer()

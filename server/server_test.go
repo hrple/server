@@ -10,11 +10,22 @@ func TestServerStart(t *testing.T) {
 	serviceRunning := make(chan struct{})
 	serviceDone := make(chan struct{})
 
-	Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
+	err := Get("/testGet", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	var err error
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
+
+	err = Put("/testGet", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
+
 	var errStop error
 	go func() {
 		close(serviceRunning)
@@ -51,13 +62,15 @@ func TestServerGetLogger(t *testing.T) {
 	}
 }
 
-var testServer = NewServer()
-
 func TestServerGet(t *testing.T) {
-	testServer.Get("/test", func(w http.ResponseWriter, r *http.Request) {
+	var testServer = NewServer()
+	err := testServer.Get("/test", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		t.Log("GET")
 	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
 
 	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	response := httptest.NewRecorder()
@@ -70,10 +83,14 @@ func TestServerGet(t *testing.T) {
 }
 
 func TestServerPut(t *testing.T) {
-	testServer.Put("/test", func(w http.ResponseWriter, r *http.Request) {
+	var testServer = NewServer()
+	err := testServer.Put("/test", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		t.Log("PUT")
 	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
 
 	request, _ := http.NewRequest(http.MethodPut, "/test", nil)
 	response := httptest.NewRecorder()
@@ -82,5 +99,79 @@ func TestServerPut(t *testing.T) {
 
 	if response.Code != http.StatusOK {
 		t.Fatalf("Something wrong")
+	}
+}
+
+func TestServerPutHandlerNotFound(t *testing.T) {
+	var testServer = NewServer()
+	err := testServer.Put("/test", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		t.Log("PUT")
+	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
+
+	request, _ := http.NewRequest(http.MethodPut, "/testFuncNotFound", nil)
+	response := httptest.NewRecorder()
+
+	testServer.ServeHTTP(response, request)
+
+	if response.Code == http.StatusOK {
+		t.Fatalf("Something wrong")
+	}
+}
+
+func TestServerPutSubHandlerNotFound(t *testing.T) {
+	var testServer = NewServer()
+	err := testServer.Put("/mufasa", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		t.Log("PUT")
+	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
+
+	request, _ := http.NewRequest(http.MethodPut, "/testFuncNotFound/Fail", nil)
+	response := httptest.NewRecorder()
+
+	testServer.ServeHTTP(response, request)
+
+	if response.Code == http.StatusOK {
+		t.Fatalf("Something wrong")
+	}
+}
+
+func TestServerPutMethodNotFound(t *testing.T) {
+	var testServer = NewServer()
+	err := testServer.Put("/test", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		t.Log("PUT")
+	})
+
+	if err != nil {
+		t.Errorf("Error Occurred: %v", err)
+	}
+
+	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
+	response := httptest.NewRecorder()
+
+	testServer.ServeHTTP(response, request)
+
+	if response.Code == http.StatusOK {
+		t.Fatalf("Something wrong")
+	}
+}
+
+func TestServerAddInvalidRoute(t *testing.T) {
+	var testServer = NewServer()
+	err := testServer.Get("[ INVALID REGEX", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	if err == nil {
+		t.Error("This should have failed an an invalid regex was passed int to GET")
 	}
 }

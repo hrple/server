@@ -14,7 +14,6 @@ Hopefully everything is green :P
 [![Go Report Card](https://goreportcard.com/badge/github.com/hrple/common)](https://goreportcard.com/report/github.com/hrple/common)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=alert_status)](https://sonarcloud.io/dashboard?id=hrple_common)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=alert_status)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=hrple_common)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=hrple_common&metric=security_rating)](https://sonarcloud.io/dashboard?id=hrple_common)
@@ -29,11 +28,11 @@ Hopefully everything is green :P
 
 ### Prerequisites
 
--   Golang
--   Python
--   Your favourite IDE or Text Editor (VS Code obviously)
--   Docker
--   [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- Golang
+- Python
+- Your favourite IDE or Text Editor (VS Code obviously)
+- Docker
+- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
 What things you need to install the software and how to install them
 
@@ -75,6 +74,6 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
--   [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+<!-- -   [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
 -   [Maven](https://maven.apache.org/) - Dependency Management
--   [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+-   [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds -->

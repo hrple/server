@@ -9,7 +9,7 @@ export PATH
 go mod tidy
 gofmt -l -s -w ./
 
-golangci-lint run     
+golangci-lint run -c ./.golangci.yml  
 
 sql_content=$(safesql -v ./)
 sql_res=$?
