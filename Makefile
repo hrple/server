@@ -1,9 +1,12 @@
-.PHONY: code-check setup-build-env test
+.PHONY: code-check setup-build-env test only-test only-code-check
 
 code-check: setup-build-env
 	./scripts/static-code-analysis.sh
 
-testOnly:
+only-code-check:
+	./scripts/static-code-analysis.sh
+
+only-test:
 	rm -f bin/code-coverage-report.html
 	go test -v -race -coverprofile=bin/code-coverage-report-codecov.out -covermode=atomic ./server && go tool cover -html=bin/code-coverage-report-codecov.out -o bin/code-coverage-report.html
 

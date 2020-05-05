@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -47,38 +48,45 @@ func (s *ApplicationServer) Stop() error {
 }
 
 // Get adds a handler for the 'GET' http method for server s.
-func (s *ApplicationServer) Get(route string, f func(http.ResponseWriter, *http.Request)) {
-	s.addRoute(route, http.MethodGet, f)
+func (s *ApplicationServer) Get(route string, f func(http.ResponseWriter, *http.Request)) error {
+	err := s.addRoute(route, http.MethodGet, f)
+	return err
 }
 
 // Put adds a handler for the 'PUT' http method for server s.
-func (s *ApplicationServer) Put(route string, f func(http.ResponseWriter, *http.Request)) {
-	s.addRoute(route, http.MethodPut, f)
+func (s *ApplicationServer) Put(route string, f func(http.ResponseWriter, *http.Request)) error {
+	err := s.addRoute(route, http.MethodPut, f)
+	return err
 }
 
 // ServeHTTP is the interface method for Go's http server package
 func (s *ApplicationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctime := time.Now()
-	route := s.findRouteHandler(w, r)
+	// remove w, will add it if its needed.
+	route := s.findRouteHandler(r)
+
 	if route == nil {
 		http.NotFound(w, r)
 		return
 	}
 
-	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
+	// add common headers
+	w.Header().Add("Server", "hrple.common.server")
+	w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
-	// should maybe add this later s.before(w, r)
-	// should maybe add this later  s.after(w, r)
+	// remove before and after, will add it if its needed s.before(w, r) / s.after(w, r)
 	route.httpHandler(w, r)
 	s.Logger.Printf("Executed: %v%v Execution Time: %v Method : %v RemoteAddr: %v",
 		r.Host, r.URL, time.Since(ctime), r.Method, r.RemoteAddr)
 }
 
-func (s *ApplicationServer) findRouteHandler(w http.ResponseWriter, r *http.Request) (selectedRoute *route) {
+func (s *ApplicationServer) findRouteHandler(r *http.Request) (selectedRoute *route) {
 	requestPath := r.URL.Path
 
-	if w == nil {
-		return nil
+	// remove trailing slash if any (i.e. GET /hello/ equals GET /hello)
+	lastChar := requestPath[len(requestPath)-1 : len(requestPath)]
+	if lastChar == "/" {
+		requestPath = requestPath[:len(requestPath)-1]
 	}
 
 	for i := 0; i < len(s.routes); i++ {
@@ -102,23 +110,23 @@ func (s *ApplicationServer) findRouteHandler(w http.ResponseWriter, r *http.Requ
 
 		if currentRoute.httpHandler != nil {
 			selectedRoute = &currentRoute
-			return selectedRoute
+			break
 		}
-
-		return nil
 	}
 
-	return nil
+	return selectedRoute
 }
 
-func (s *ApplicationServer) addRoute(r, method string, handler func(http.ResponseWriter, *http.Request)) {
+func (s *ApplicationServer) addRoute(r, method string, handler func(http.ResponseWriter, *http.Request)) error {
 	cr, err := regexp.Compile(r)
 	if err != nil {
 		s.Logger.Printf("Error in route regex %q\n", r)
-		return
+		err = errors.New("invalid reg expression, unable to add route")
+		return err
 	}
 
 	s.routes = append(s.routes, route{r: r, cr: cr, method: method, httpHandler: handler})
+	return nil
 }
 
 // func (s *ApplicationServer) before(w http.ResponseWriter, r *http.Request) {
