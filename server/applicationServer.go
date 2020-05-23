@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -41,9 +42,32 @@ func (s *ApplicationServer) Start(addr string) error {
 	if err != nil {
 		log.Fatal("Listen:", err)
 	} else {
-		log.Println("Listening on:", listner.Addr().String())
+		address := listner.Addr().String()
+		ip := ""
+		port := ""
+
+		arr := strings.Split(address, ":")
+		if strings.Contains(address, "[::]") {
+			ip = "127.0.0.1"
+			port = arr[len(arr)-1]
+		} else {
+			//IPV4
+			if len(arr) == 2 {
+				ip = arr[0]
+				port = arr[1]
+			}
+
+			if len(arr) > 2 {
+				//IPV6
+				log.Fatal("IPV6 Not Implemented, bind to IPV4")
+			}
+
+		}
+
+		log.Println("Listening on:", address, " URL: http://"+ip+":"+port)
+
 		if s.Config.ServerAddress == "" {
-			s.Config.ServerAddress = listner.Addr().String()
+			s.Config.ServerAddress = address
 		}
 	}
 
