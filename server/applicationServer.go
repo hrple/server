@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"regexp"
@@ -35,9 +36,18 @@ func NewServer() *ApplicationServer {
 // Start will start the server eventually
 func (s *ApplicationServer) Start(addr string) error {
 	s.Config.ServerAddress = addr
-	s.httpServer.Addr = s.Config.ServerAddress
 
-	err := s.httpServer.ListenAndServe()
+	listner, err := net.Listen("tcp", s.Config.ServerAddress)
+	if err != nil {
+		log.Fatal("Listen:", err)
+	} else {
+		log.Println("Listening on:", listner.Addr().String())
+		if s.Config.ServerAddress == "" {
+			s.Config.ServerAddress = listner.Addr().String()
+		}
+	}
+
+	err = s.httpServer.Serve(listner)
 	return err
 }
 
@@ -84,10 +94,10 @@ func (s *ApplicationServer) findRouteHandler(r *http.Request) (selectedRoute *ro
 	requestPath := r.URL.Path
 
 	// remove trailing slash if any (i.e. GET /hello/ equals GET /hello)
-	lastChar := requestPath[len(requestPath)-1 : len(requestPath)]
-	if lastChar == "/" {
-		requestPath = requestPath[:len(requestPath)-1]
-	}
+	// lastChar := requestPath[len(requestPath)-1:]
+	// if lastChar == "/" {
+	// 	requestPath = requestPath[:len(requestPath)-1]
+	// }
 
 	for i := 0; i < len(s.routes); i++ {
 		currentRoute := s.routes[i]
