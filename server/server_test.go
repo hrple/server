@@ -58,46 +58,46 @@ func TestServerStart(t *testing.T) {
 	<-serviceDone
 }
 
-func TestServerStartIPv4(t *testing.T) {
-	serviceRunning := make(chan struct{})
-	serviceDone := make(chan struct{})
+// func TestServerStartIPv4(t *testing.T) {
+// 	serviceRunning := make(chan struct{})
+// 	serviceDone := make(chan struct{})
 
-	err := GetFunc("/testGet", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
+// 	err := GetFunc("/testGet", func(w http.ResponseWriter, r *http.Request) {
+// 		w.WriteHeader(http.StatusOK)
+// 	})
 
-	if err != nil {
-		t.Errorf("Error Occurred: %v", err)
-	}
+// 	if err != nil {
+// 		t.Errorf("Error Occurred: %v", err)
+// 	}
 
-	err = PutFunc("/testPut", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
+// 	err = PutFunc("/testPut", func(w http.ResponseWriter, r *http.Request) {
+// 		w.WriteHeader(http.StatusOK)
+// 	})
 
-	if err != nil {
-		t.Errorf("Error Occurred: %v", err)
-	}
+// 	if err != nil {
+// 		t.Errorf("Error Occurred: %v", err)
+// 	}
 
-	var errStop error
-	go func() {
-		close(serviceRunning)
-		err = Start("0.0.0.0:5567")
+// 	var errStop error
+// 	go func() {
+// 		close(serviceRunning)
+// 		err = Start("0.0.0.0:5567")
 
-		defer close(serviceDone)
-	}()
+// 		defer close(serviceDone)
+// 	}()
 
-	<-serviceRunning
+// 	<-serviceRunning
 
-	if err != nil {
-		t.Fatalf("Server never started %v", err)
-	}
-	errStop = Stop()
-	if errStop != nil {
-		t.Fatalf("Server never started %v", errStop)
-	}
+// 	if err != nil {
+// 		t.Fatalf("Server never started %v", err)
+// 	}
+// 	errStop = Stop()
+// 	if errStop != nil {
+// 		t.Fatalf("Server never started %v", errStop)
+// 	}
 
-	<-serviceDone
-}
+// 	<-serviceDone
+// }
 
 func TestServerGetConfiguration(t *testing.T) {
 	config := GetConfiguration()
