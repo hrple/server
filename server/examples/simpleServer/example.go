@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	server.Get("/hello/", helloWorldStd)
+	server.Get("/hello", helloWorldStd)
 
 	logger := server.GetLogger()
 	logger.Fatal(server.Start(""))
