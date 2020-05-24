@@ -81,7 +81,7 @@ func TestServerStartIPv4(t *testing.T) {
 	var errStop error
 	go func() {
 		close(serviceRunning)
-		err = Start("127.0.0.1:8080")
+		err = Start("127.0.0.1:5567")
 
 		defer close(serviceDone)
 	}()
